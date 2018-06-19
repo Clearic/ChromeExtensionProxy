@@ -1,0 +1,19 @@
+{
+    "name": "Proxy Extension",
+    "description": "Quick proxy switcher",
+    "version": "1.0",
+    "manifest_version": 2,
+    "permissions": [
+        "storage",
+        "proxy"
+    ],
+    "incognito": "split",
+    "browser_action": {
+        "default_popup": "index.html",
+        "default_icon": {
+            "16": "icon16.png",
+            "24": "icon24.png",
+            "32": "icon32.png"
+        }
+    }
+}
