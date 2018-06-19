@@ -160,7 +160,7 @@ const SettingsTab = ({ state, dispatch }) => {
     const onSaveSettings = () => {
         dispatch(saveSettings());
     }
-    const isSettingsChanged = () => state.address != state.saved.address || state.port != state.saved.port;
+    const isSettingsChanged = () => state.saved == undefined || state.address != state.saved.address || state.port != state.saved.port;
     const isFormValid = () => !state.portValMsg && !state.addressValMsg;
     return React.createElement("div", { className: "columns" },
         React.createElement("div", { className: "column col-8 form-group" + (state.addressValMsg ? " has-error" : "") },
@@ -233,12 +233,10 @@ class App extends React.Component {
 }
 
 chrome.proxy.settings.get({incognito: false}, details => {
-    console.log(details);
     const initState = { main: {}, settings: {} };
     initState.main.isProxyOn = (details.value.rules !== undefined);
 
     chrome.storage.local.get("proxy", result => {
-        console.log(result);
         const proxy = result.proxy;
         if (proxy) {
             initState.settings.saved = proxy;
