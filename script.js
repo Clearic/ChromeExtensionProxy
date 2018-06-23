@@ -133,6 +133,8 @@ const rootReducer = Redux.combineReducers({
     settings: settingsReducer
 });
 
+const h = preact.h;
+
 const MainTab = ({ state, dispatch }) => {
     const proxyChange = (e) => {
         if (state.isProxyOn)
@@ -140,10 +142,10 @@ const MainTab = ({ state, dispatch }) => {
         else
             dispatch(turnProxyOn());
     }
-    return React.createElement("div", { className: "form-group" },
-        React.createElement("label", { className: "form-switch" },
-            React.createElement("input", { type: "checkbox", checked: state.isProxyOn, onChange: proxyChange }),
-            React.createElement("i", { className: "form-icon" }),
+    return h("div", { className: "form-group" },
+        h("label", { className: "form-switch" },
+            h("input", { type: "checkbox", checked: state.isProxyOn, onClick: proxyChange }),
+            h("i", { className: "form-icon" }),
             " Proxy is ",
             (state.isProxyOn ? "On" : "Off")
         )
@@ -162,19 +164,19 @@ const SettingsTab = ({ state, dispatch }) => {
     }
     const isSettingsChanged = () => state.saved == undefined || state.address != state.saved.address || state.port != state.saved.port;
     const isFormValid = () => !state.portValMsg && !state.addressValMsg;
-    return React.createElement("div", { className: "columns" },
-        React.createElement("div", { className: "column col-8 form-group" + (state.addressValMsg ? " has-error" : "") },
-            React.createElement("label", { className: "form-label", for: "ipaddress" }, "IP Address"),
-            React.createElement("input", { className: "form-input", type: "text", id: "ipaddress", placeholder: "IP Address", value: state.address, onChange: onAddressChange }),
-            React.createElement("p", { className: "form-input-hint" }, state.addressValMsg)
+    return h("div", { className: "columns" },
+        h("div", { className: "column col-8 form-group" + (state.addressValMsg ? " has-error" : "") },
+            h("label", { className: "form-label", for: "ipaddress" }, "IP Address"),
+            h("input", { className: "form-input", type: "text", id: "ipaddress", placeholder: "IP Address", value: state.address, onInput: onAddressChange }),
+            h("p", { className: "form-input-hint" }, state.addressValMsg)
         ),
-        React.createElement("div", { className: "column col-4 form-group" + (state.portValMsg ? " has-error" : "") },
-            React.createElement("label", { className: "form-label", for: "port" }, "Port"),
-            React.createElement("input", { className: "form-input", type: "text", id: "port", placeholder: "Port", value: state.port, onChange: onPortChanged }),
-            React.createElement("p", { className: "form-input-hint" }, state.portValMsg)
+        h("div", { className: "column col-4 form-group" + (state.portValMsg ? " has-error" : "") },
+            h("label", { className: "form-label", for: "port" }, "Port"),
+            h("input", { className: "form-input", type: "text", id: "port", placeholder: "Port", value: state.port, onInput: onPortChanged }),
+            h("p", { className: "form-input-hint" }, state.portValMsg)
         ),
-        React.createElement("div", { className: "column col-4" },
-            React.createElement("button", { className: "btn btn-primary", onClick: onSaveSettings, disabled: !(isSettingsChanged() && isFormValid()) }, "Save")
+        h("div", { className: "column col-4" },
+            h("button", { className: "btn btn-primary", onClick: onSaveSettings, disabled: !(isSettingsChanged() && isFormValid()) }, "Save")
         )
     );
 }
@@ -188,12 +190,12 @@ const Tabs = ({ activeTab, dispatch }) => {
         e.preventDefault();
         dispatch(goToSettings(true));
     }
-    return React.createElement("ul", { className: "tab tab-block" },
-        React.createElement("li", { className: "tab-item " + (activeTab == "main" ? "active" : "") },
-            React.createElement("a", { className: (activeTab == "main" ? "active" : ""), onClick: mainClick, href: "#" }, "Main")
+    return h("ul", { className: "tab tab-block" },
+        h("li", { className: "tab-item " + (activeTab == "main" ? "active" : "") },
+            h("a", { className: (activeTab == "main" ? "active" : ""), onClick: mainClick, href: "#" }, "Main")
         ),
-        React.createElement("li", { className: "tab-item " + (activeTab == "settings" ? "active" : "") },
-            React.createElement("a", { className: (activeTab == "settings" ? "active" : ""), onClick: settingsClick, href: "#" }, "Settings")
+        h("li", { className: "tab-item " + (activeTab == "settings" ? "active" : "") },
+            h("a", { className: (activeTab == "settings" ? "active" : ""), onClick: settingsClick, href: "#" }, "Settings")
         ),
     );
 }
@@ -201,15 +203,15 @@ const Tabs = ({ activeTab, dispatch }) => {
 const Tab = ({ state, dispatch }) => {
     switch (state.activeTab) {
         case "main":
-            return React.createElement(MainTab, { state: state.main, dispatch });
+            return h(MainTab, { state: state.main, dispatch });
         case "settings":
-            return React.createElement(SettingsTab, { state: state.settings, dispatch });
+            return h(SettingsTab, { state: state.settings, dispatch });
         default:
-            return React.createElement("div");
+            return h("div");
     }
 }
 
-class App extends React.Component {
+class App extends preact.Component {
     constructor(props) {
         super(props);
         this.state = this.props.store.getState();
@@ -222,12 +224,12 @@ class App extends React.Component {
     componentWillUnmount() {
         this.unsubscribe();
     }
-    render() {
-        return React.createElement(
+    render(props, state) {
+        return h(
             "div",
             null,
-            React.createElement(Tabs, { activeTab: this.state.activeTab, dispatch: this.props.store.dispatch }),
-            React.createElement(Tab, { state: this.state, dispatch: this.props.store.dispatch })
+            h(Tabs, { activeTab: state.activeTab, dispatch: props.store.dispatch }),
+            h(Tab, { state: state, dispatch: props.store.dispatch })
         );
     }
 }
@@ -252,6 +254,6 @@ chrome.proxy.settings.get({incognito: false}, details => {
         // const unsubscribe = store.subscribe(() => {
         //     console.log(store.getState());
         // });
-        ReactDOM.render(React.createElement(App, { store }), document.getElementById("app"));
+        preact.render(h(App, { store }), document.getElementById("app"));
     });
 });
