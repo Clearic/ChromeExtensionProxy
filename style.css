@@ -2,3 +2,8 @@ body {
     min-width: 400px;
     margin: 15px;
 }
+
+.js-focus-visible :focus:not(.focus-visible) {
+    outline: none;
+    box-shadow: none;
+}
