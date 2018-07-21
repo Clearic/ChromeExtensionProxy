@@ -1,0 +1,28 @@
+{
+  "name": "ChromeExtensionProxy",
+  "version": "1.0.0",
+  "description": "",
+  "main": "focus-visible.js",
+  "scripts": {
+    "build": "cross-env NODE_ENV=production webpack -p",
+    "clean": "rimraf build"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "copy-webpack-plugin": "^4.5.2",
+    "cross-env": "^5.2.0",
+    "css-loader": "^1.0.0",
+    "style-loader": "^0.21.0",
+    "webpack": "^4.16.1",
+    "webpack-cli": "^3.1.0"
+  },
+  "dependencies": {
+    "focus-visible": "^4.1.4",
+    "preact": "^8.2.9",
+    "redux": "^4.0.0",
+    "redux-thunk": "^2.3.0",
+    "spectre.css": "^0.5.3"
+  }
+}
