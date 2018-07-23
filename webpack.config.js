@@ -7,7 +7,7 @@ const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin");
 console.log("process.env.NODE_ENV: " + process.env.NODE_ENV);
 
 module.exports = {
-    entry: "./src/script.js",
+    entry: "./src/index.js",
     output: {
         path: path.resolve(__dirname, "build"),
         filename: "bundle.js"
