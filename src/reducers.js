@@ -1,6 +1,7 @@
 import * as types from "./actionTypes";
+import { combineReducers } from "redux";
 
-export const activeTabReducer = (state = "", action) => {
+const activeTabReducer = (state = "", action) => {
     switch (action.type) {
         case types.GO_TO_MAIN:
         case types.SETTINGS_SAVED:
@@ -12,7 +13,7 @@ export const activeTabReducer = (state = "", action) => {
     }
 }
 
-export const mainReducer = (state = { isProxyOn: false }, action) => {
+const mainReducer = (state = {}, action) => {
     switch (action.type) {
         case types.PROXY_STATUS_CHANGED:
             return Object.assign({}, state, { isProxyOn: action.isProxyOn });
@@ -33,14 +34,14 @@ function validateIpAddress(address) {
     return re.test(address);
 }
 
-export const settingsReducer = (state = { isProxyOn: false }, action) => {
+const settingsReducer = (state = {}, action) => {
     switch (action.type) {
         case types.SETTINGS_ADDRESS_CHANGED: {
-            const addressValMsg = validateIpAddress(action.address) ? null : "Invalid IP Address";
+            const addressValMsg = validateIpAddress(action.address) ? undefined : "Invalid IP Address";
             return Object.assign({}, state, { address: action.address, addressValMsg });
         }
         case types.SETTINGS_PORT_CHANGED: {
-            const portValMsg = validatePort(action.port) ? null : "Invalid Port";
+            const portValMsg = validatePort(action.port) ? undefined : "Invalid Port";
             return Object.assign({}, state, { port: action.port, portValMsg });
         }
         case types.SETTINGS_SAVED:
@@ -48,4 +49,30 @@ export const settingsReducer = (state = { isProxyOn: false }, action) => {
         default:
             return state;
     }
+}
+
+export const rootReducer = combineReducers({
+    activeTab: activeTabReducer,
+    main: mainReducer,
+    settings: settingsReducer
+});
+
+export function createInitState(isProxyOn, savedSettings) {
+    const state = {
+        main: { isProxyOn }, 
+        settings: {} 
+    };
+
+    if (savedSettings) {
+        state.activeTab = "main";
+        state.settings.saved = { address: savedSettings.address, port: savedSettings.port };
+        state.settings.address = savedSettings.address;
+        state.settings.port = savedSettings.port;
+    } else {
+        state.activeTab = "settings";
+        state.settings.address = "";
+        state.settings.port = "";
+    }
+
+    return state;
 }

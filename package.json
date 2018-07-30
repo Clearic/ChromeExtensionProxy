@@ -1,21 +1,35 @@
 {
-  "name": "ChromeExtensionProxy",
+  "name": "chrome-extension-proxy",
   "version": "1.0.0",
   "description": "",
   "main": "focus-visible.js",
   "scripts": {
     "build": "cross-env NODE_ENV=production webpack -p",
-    "clean": "rimraf build"
+    "clean": "rimraf build",
+    "test": "cross-env NODE_ENV=test jest --watch"
+  },
+  "jest": {
+    "transform": {
+      "^.+\\.(js|jsx|mjs)$": "<rootDir>/node_modules/babel-jest"
+    }
+  },
+  "babel": {
+    "presets": ["env"]
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "babel-core": "^6.26.3",
+    "babel-jest": "^23.4.0",
+    "babel-preset-env": "^1.7.0",
     "copy-webpack-plugin": "^4.5.2",
     "cross-env": "^5.2.0",
     "css-loader": "^1.0.0",
+    "jest": "^23.4.1",
     "mini-css-extract-plugin": "^0.4.1",
     "optimize-css-assets-webpack-plugin": "^5.0.0",
+    "regenerator-runtime": "^0.12.0",
     "style-loader": "^0.21.0",
     "uglifyjs-webpack-plugin": "^1.2.7",
     "webpack": "^4.16.1",

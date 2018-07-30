@@ -1,3 +1,4 @@
+'use strict';
 import "spectre.css";
 import "./style.css";
 import "focus-visible";
@@ -6,12 +7,6 @@ import * as ReduxThunk from "redux-thunk";
 import { h, Component, render } from "preact";
 import * as reducers from "./reducers";
 import { Tab, Tabs } from "./components";
-
-const rootReducer = Redux.combineReducers({
-    activeTab: reducers.activeTabReducer,
-    main: reducers.mainReducer,
-    settings: reducers.settingsReducer
-});
 
 class App extends Component {
     constructor(props) {
@@ -37,25 +32,9 @@ class App extends Component {
 }
 
 chrome.proxy.settings.get({incognito: false}, details => {
-    const initState = { main: {}, settings: {} };
-    initState.main.isProxyOn = (details.value.rules !== undefined);
-
     chrome.storage.local.get("proxy", result => {
-        const proxy = result.proxy;
-        if (proxy) {
-            initState.settings.saved = proxy;
-            initState.settings.address = proxy.address;
-            initState.settings.port = proxy.port;
-            initState.activeTab = "main";
-        } else {
-            initState.activeTab = "settings";
-            initState.settings.address = "";
-            initState.settings.port = "";
-        }
-        const store = Redux.createStore(rootReducer, initState, Redux.applyMiddleware(ReduxThunk.default));
-        // const unsubscribe = store.subscribe(() => {
-        //     console.log(store.getState());
-        // });
+        const initState = reducers.createInitState(details.value.rules !== undefined, result.proxy);
+        const store = Redux.createStore(reducers.rootReducer, initState, Redux.applyMiddleware(ReduxThunk.default));
         render(h(App, { store }), document.getElementById("app"));
     });
 });
