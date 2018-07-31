@@ -1,4 +1,4 @@
-import { h, Component } from "preact";
+import { h } from "preact";
 import * as actions from "./actions";
 import * as thunks from "./thunks";
 
@@ -32,6 +32,7 @@ export const SettingsTab = ({ state, dispatch }) => {
     const isSettingsChanged = () => state.saved == undefined || state.address != state.saved.address || state.port != state.saved.port;
     const isFormValid = () => !state.portValMsg && !state.addressValMsg;
     return h("div", { className: "columns" },
+        h("h5", { className: "column col-12" }, "SOCKS5 Proxy"),
         h("div", { className: "column col-8 form-group" + (state.addressValMsg ? " has-error" : "") },
             h("label", { className: "form-label", for: "ipaddress" }, "IP Address"),
             h("input", { className: "form-input", type: "text", id: "ipaddress", placeholder: "IP Address", value: state.address, onInput: onAddressChange }),
